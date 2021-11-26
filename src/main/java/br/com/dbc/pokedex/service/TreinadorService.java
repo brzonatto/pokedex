@@ -1,14 +1,17 @@
 package br.com.dbc.pokedex.service;
 
 import br.com.dbc.pokedex.dto.TreinadorCreateDTO;
+import br.com.dbc.pokedex.entity.PokedexEntity;
 import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.dto.TreinadorDTO;
 import br.com.dbc.pokedex.entity.TreinadorEntity;
 import br.com.dbc.pokedex.repository.TreinadorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +21,7 @@ public class TreinadorService {
     private final TreinadorRepository treinadorRepository;
     private final ObjectMapper objectMapper;
 
-    public TreinadorDTO create(TreinadorCreateDTO treinadorCreateDTO) {
+    public TreinadorDTO create(TreinadorCreateDTO treinadorCreateDTO, String auth) {
         TreinadorEntity entity = objectMapper.convertValue(treinadorCreateDTO, TreinadorEntity.class);
         TreinadorEntity create = treinadorRepository.save(entity);
         TreinadorDTO treinadorDTO = objectMapper.convertValue(create, TreinadorDTO.class);
@@ -50,5 +53,9 @@ public class TreinadorService {
     public TreinadorEntity getEntityById(String idTreinador) throws RegraDeNegocioException {
         return treinadorRepository.findById(idTreinador)
                 .orElseThrow(() -> new RegraDeNegocioException("Treinador não encontrado"));
+    }
+
+    public void revelarPokemon() {
+
     }
 }

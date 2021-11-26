@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -21,5 +22,8 @@ public class TreinadorEntity {
     private Date dataNascimento;
     private String sexo;
     private String email;
+
+    @DBRef
+    private PokedexEntity pokedexEntity;
     
 }

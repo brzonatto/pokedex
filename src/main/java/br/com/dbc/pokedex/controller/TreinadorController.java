@@ -21,8 +21,8 @@ public class TreinadorController {
     private final TreinadorService treinadorService;
 
     @PostMapping
-    public TreinadorDTO create(@RequestBody @Valid TreinadorCreateDTO treinadorCreateDTO) {
-        TreinadorDTO treinadorDTO = treinadorService.create(treinadorCreateDTO);
+    public TreinadorDTO create(@RequestBody @Valid TreinadorCreateDTO treinadorCreateDTO, @RequestHeader("Authorization") String auth) {
+        TreinadorDTO treinadorDTO = treinadorService.create(treinadorCreateDTO, auth);
         return treinadorDTO;
     }
 
