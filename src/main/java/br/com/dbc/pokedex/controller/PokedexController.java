@@ -4,13 +4,13 @@ import br.com.dbc.pokedex.dto.LoginDTO;
 import br.com.dbc.pokedex.service.PokedexService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pokedex")
@@ -18,7 +18,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 public class PokedexController {
-
     private final PokedexService pokedexService;
 
     @PostMapping
@@ -26,5 +25,8 @@ public class PokedexController {
         return pokedexService.auth(loginDTO);
     }
 
-
+    @GetMapping
+    public List<Document> listPokeDados(@RequestHeader("Authorization") String authorizationHeader) {
+        return pokedexService.listPokeDados(authorizationHeader);
+    }
 }

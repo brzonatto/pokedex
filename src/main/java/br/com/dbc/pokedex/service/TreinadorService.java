@@ -1,9 +1,9 @@
 package br.com.dbc.pokedex.service;
 
 import br.com.dbc.pokedex.dto.TreinadorCreateDTO;
+import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.dto.TreinadorDTO;
 import br.com.dbc.pokedex.entity.TreinadorEntity;
-import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.repository.TreinadorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
