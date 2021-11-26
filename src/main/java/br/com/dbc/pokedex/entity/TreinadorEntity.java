@@ -21,4 +21,5 @@ public class TreinadorEntity {
     private Date dataNascimento;
     private String sexo;
     private String email;
+    
 }

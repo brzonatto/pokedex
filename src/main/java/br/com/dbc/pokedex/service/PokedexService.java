@@ -7,6 +7,7 @@ import org.bson.Document;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -21,5 +22,10 @@ public class PokedexService {
 
     public List<Document> listPokeDados(String authorizationHeader) {
         return pokeProjetoClient.listPokeDados(authorizationHeader);
+    }
+
+    public Integer countTotalPokemons(String authorizationHeader) {
+        List<Document> pokemons = listPokeDados(authorizationHeader);
+        return pokemons.size();
     }
 }

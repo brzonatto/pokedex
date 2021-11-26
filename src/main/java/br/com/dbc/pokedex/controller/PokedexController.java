@@ -29,4 +29,9 @@ public class PokedexController {
     public List<Document> listPokeDados(@RequestHeader("Authorization") String authorizationHeader) {
         return pokedexService.listPokeDados(authorizationHeader);
     }
+
+    @GetMapping("/count-total")
+    public Integer countTotalPokemons(@RequestHeader("Authorization") String authorizationHeader) {
+        return pokedexService.countTotalPokemons(authorizationHeader);
+    }
 }
