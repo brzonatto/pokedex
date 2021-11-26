@@ -12,6 +12,12 @@ public class PokedexService {
     private final PokeProjetoClient pokeProjetoClient;
 
     public String auth(LoginDTO loginDTO) {
-        return pokeProjetoClient.auth(loginDTO);
+        try{
+            return pokeProjetoClient.auth(loginDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
     }
 }

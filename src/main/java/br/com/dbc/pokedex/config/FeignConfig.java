@@ -30,4 +30,9 @@ public class FeignConfig {
                 .errorDecoder(new SimpleErrorDecode())
                 .decoder(new JacksonDecoder());
     }
+
+    @Bean
+    Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
 }
