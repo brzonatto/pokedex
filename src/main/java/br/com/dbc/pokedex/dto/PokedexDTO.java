@@ -11,8 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PokedexDTO {
-
     private String idPokedex;
-
-    private List<Document> pokemons;
+    private Integer quantidadeDePokemonsExistentes;
+    private Integer quantidadePokemonsRevelados;
+    private List<PokeDadosDTO> pokemons;
 }

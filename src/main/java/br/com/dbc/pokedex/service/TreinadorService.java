@@ -1,5 +1,6 @@
 package br.com.dbc.pokedex.service;
 
+import br.com.dbc.pokedex.dto.PokedexDTO;
 import br.com.dbc.pokedex.dto.TreinadorCreateDTO;
 import br.com.dbc.pokedex.entity.PokedexEntity;
 import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
@@ -8,10 +9,8 @@ import br.com.dbc.pokedex.entity.TreinadorEntity;
 import br.com.dbc.pokedex.repository.TreinadorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.bson.Document;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,12 @@ public class TreinadorService {
     private final TreinadorRepository treinadorRepository;
     private final ObjectMapper objectMapper;
 
-    public TreinadorDTO create(TreinadorCreateDTO treinadorCreateDTO, String auth) {
+    public TreinadorEntity getTreinadorById(String idTreinador) throws RegraDeNegocioException {
+        return treinadorRepository.findById(idTreinador)
+                .orElseThrow(() -> new RegraDeNegocioException("Treinador não encontrado"));
+    }
+
+    public TreinadorDTO create(TreinadorCreateDTO treinadorCreateDTO) {
         TreinadorEntity entity = objectMapper.convertValue(treinadorCreateDTO, TreinadorEntity.class);
         TreinadorEntity create = treinadorRepository.save(entity);
         TreinadorDTO treinadorDTO = objectMapper.convertValue(create, TreinadorDTO.class);
@@ -36,7 +40,7 @@ public class TreinadorService {
     }
 
     public TreinadorDTO update(String idTreinador, TreinadorCreateDTO treinadorCreateDTO) throws RegraDeNegocioException {
-        TreinadorEntity entity = getEntityById(idTreinador);
+        TreinadorEntity entity = getTreinadorById(idTreinador);
         entity.setNomeCompleto(treinadorCreateDTO.getNomeCompleto());
         entity.setDataNascimento(treinadorCreateDTO.getDataNascimento());
         entity.setSexo(treinadorCreateDTO.getSexo());
@@ -47,15 +51,6 @@ public class TreinadorService {
     }
 
     public void delete(String idTreinador) throws RegraDeNegocioException {
-        treinadorRepository.delete(getEntityById(idTreinador));
-    }
-
-    public TreinadorEntity getEntityById(String idTreinador) throws RegraDeNegocioException {
-        return treinadorRepository.findById(idTreinador)
-                .orElseThrow(() -> new RegraDeNegocioException("Treinador não encontrado"));
-    }
-
-    public void revelarPokemon() {
-
+        treinadorRepository.delete(getTreinadorById(idTreinador));
     }
 }

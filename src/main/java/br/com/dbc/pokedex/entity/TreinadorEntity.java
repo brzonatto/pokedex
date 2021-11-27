@@ -14,7 +14,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
+@Document(collection = "treinador")
 public class TreinadorEntity {
     @Id
     private String idTreinador;
