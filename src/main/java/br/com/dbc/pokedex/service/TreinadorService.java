@@ -28,8 +28,7 @@ public class TreinadorService {
     public TreinadorDTO create(TreinadorCreateDTO treinadorCreateDTO) {
         TreinadorEntity entity = objectMapper.convertValue(treinadorCreateDTO, TreinadorEntity.class);
         TreinadorEntity create = treinadorRepository.save(entity);
-        TreinadorDTO treinadorDTO = objectMapper.convertValue(create, TreinadorDTO.class);
-        return treinadorDTO;
+        return objectMapper.convertValue(create, TreinadorDTO.class);
     }
 
     public List<TreinadorDTO> list() {
@@ -46,8 +45,7 @@ public class TreinadorService {
         entity.setSexo(treinadorCreateDTO.getSexo());
         entity.setEmail(treinadorCreateDTO.getEmail());
         TreinadorEntity update = treinadorRepository.save(entity);
-        TreinadorDTO treinadorDTO = objectMapper.convertValue(update, TreinadorDTO.class);
-        return treinadorDTO;
+        return objectMapper.convertValue(update, TreinadorDTO.class);
     }
 
     public void delete(String idTreinador) throws RegraDeNegocioException {

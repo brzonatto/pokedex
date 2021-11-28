@@ -1,9 +1,6 @@
 package br.com.dbc.pokedex.controller;
 
-import br.com.dbc.pokedex.dto.LoginDTO;
-import br.com.dbc.pokedex.dto.PokeDadosDTO;
-import br.com.dbc.pokedex.dto.PokedexDTO;
-import br.com.dbc.pokedex.dto.PokemonDTO;
+import br.com.dbc.pokedex.dto.*;
 import br.com.dbc.pokedex.entity.PokedexEntity;
 import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.service.PokedexService;
@@ -30,16 +27,6 @@ public class PokedexController {
         return pokedexService.auth(loginDTO);
     }
 
-//    @GetMapping
-//    public List<Document> listPokeDados(@RequestHeader("Authorization") String authorizationHeader) {
-//        return pokedexService.listPokeDados(authorizationHeader);
-//    }
-
-//    @GetMapping("/count-total")
-//    public Integer countTotalPokemons(@RequestHeader("Authorization") String authorizationHeader) {
-//        return pokedexService.countTotalPokemons(authorizationHeader);
-//    }
-
     @PostMapping("/create")
     public PokedexDTO create(@RequestHeader("Authorization") String authorizationHeader, @RequestParam("idTreinador") String idTreinador) throws RegraDeNegocioException {
         return pokedexService.create(authorizationHeader, idTreinador);
@@ -53,8 +40,8 @@ public class PokedexController {
         return pokedexService.revelarPokemon(numeroPokemon, idTreinador, authorizationHeader);
     }
 
-//    @GetMapping("/poke")
-//    public List<PokeDadosDTO> listPoke(@RequestHeader("Authorization") String authorizationHeader) {
-//        return pokedexService.listPoke(authorizationHeader);
-//    }
+    @GetMapping("/dados/pokedex")
+    public PokedexDadosDTO getDadosPokedex(@RequestParam String idTreinador, @RequestHeader("Authorization") String authorizationHeader) throws RegraDeNegocioException {
+        return pokedexService.getDadosPokedex(idTreinador, authorizationHeader);
+    }
 }

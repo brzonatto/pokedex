@@ -64,7 +64,6 @@ public class PokedexService {
                     Document docPokemon = objectMapper.convertValue(document.get("pokemon"), Document.class);
                     PokemonDTO pokemonDTO = objectMapper.convertValue(docPokemon, PokemonDTO.class);
                     pokeDadosDTO.setPokemon(pokemonDTO);
-
                     List docTipo = document.get("tipos", List.class);
                     List<String> tipos = new ArrayList<>();
                     if (docTipo.size() != 0) {
@@ -74,7 +73,6 @@ public class PokedexService {
                         }
                     }
                     pokeDadosDTO.setTipos(tipos);
-
                     List docHabilidade = document.get("habilidades", List.class);
                     List<String> habilidades = new ArrayList<>();
                     if (docHabilidade.size() != 0) {
@@ -84,38 +82,65 @@ public class PokedexService {
                         }
                     }
                     pokeDadosDTO.setHabilidades(habilidades);
-
                     Document docEvolucao = objectMapper.convertValue(document.get("evolucao"), Document.class);
                     EvolucaoNomesDTO evolucaoNomesDTO = objectMapper.convertValue(docEvolucao, EvolucaoNomesDTO.class);
                     pokeDadosDTO.setEvolucao(evolucaoNomesDTO);
-
                     return pokeDadosDTO;
                 })
-                .collect(Collectors.toList()).stream().sorted(Comparator.comparing(a -> a.getPokemon().getNumero()))
+                .sorted(Comparator.comparing(a -> a.getPokemon().getNumero()))
                 .collect(Collectors.toList());
     }
 
-
-    public PokedexEntity revelarPokemon(Integer numeroPokemon, String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
-        PokeDadosDTO pokeDadosDTO = listPokemonDadosDTO(authorizationHeader)
+    public PokeDadosDTO getPokeDadosByNumero(Integer numeroPokemon, String authorizationHeader) throws RegraDeNegocioException {
+       return listPokemonDadosDTO(authorizationHeader)
                 .stream()
                 .filter(poke -> poke.getPokemon().getNumero().equals(numeroPokemon))
                 .findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("Pokemon não encontrado"));
+    }
 
+
+    public PokedexEntity revelarPokemon(Integer numeroPokemon, String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
+        PokeDadosDTO pokeDadosDTO = getPokeDadosByNumero(numeroPokemon, authorizationHeader);
         TreinadorEntity treinadorEntity = treinadorService.getTreinadorById(idTreinador);
         PokedexEntity pokedexEntity = getPokedexById(treinadorEntity.getPokedexEntity().getIdPokedex());
-
-
         List<PokeDadosDTO> pokemons = pokedexEntity.getPokemons();
         pokemons.add(pokeDadosDTO);
-        pokedexEntity.setPokemons(pokemons);
+        pokedexEntity.setPokemons(
+                pokemons.stream()
+                        .sorted(Comparator.comparing(a -> a.getPokemon().getNumero())).collect(Collectors.toList())
+        );
         pokedexEntity.setQuantidadePokemonsRevelados(pokemons.size());
+        return pokedexRepository.save(pokedexEntity);
+    }
 
+    public PokedexDadosDTO getDadosPokedex(String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
+        TreinadorEntity treinadorEntity = treinadorService.getTreinadorById(idTreinador);
+        TreinadorDTO treinadorDTO = objectMapper.convertValue(treinadorEntity, TreinadorDTO.class);
+        PokedexEntity pokedexEntity = getPokedexById(treinadorEntity.getPokedexEntity().getIdPokedex());
+        pokedexEntity.setQuantidadeDePokemonsExistentes(countTotalPokemons(authorizationHeader));
+
+        List<Integer> base = pokedexEntity.getPokemons()
+                .stream()
+                .map(pokemon -> pokemon.getPokemon().getNumero())
+                .collect(Collectors.toList());
+
+        List<PokeDadosDTO> pokeDadosUpdate = new ArrayList<>();
+        for (int i = 0; i < base.size(); i++) {
+            pokeDadosUpdate.add(getPokeDadosByNumero(base.get(i), authorizationHeader));      }
+
+
+
+        pokedexEntity.setPokemons(
+                pokeDadosUpdate.stream()
+                        .sorted(Comparator.comparing(a -> a.getPokemon().getNumero())).collect(Collectors.toList())
+        );
 
         PokedexEntity pokedexUpdate = pokedexRepository.save(pokedexEntity);
-
-        return pokedexUpdate;
-
+        PokedexDTO pokedexDTO = objectMapper.convertValue(pokedexUpdate, PokedexDTO.class);
+        PokedexDadosDTO pokedexDadosDTO = new PokedexDadosDTO();
+        pokedexDadosDTO.setTreinador(treinadorDTO);
+        pokedexDadosDTO.setPokedex(pokedexDTO);
+        return pokedexDadosDTO;
     }
 }
