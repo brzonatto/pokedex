@@ -101,11 +101,15 @@ public class PokedexService {
 
 
     public PokedexEntity revelarPokemon(Integer numeroPokemon, String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
-        PokeDadosDTO pokeDadosDTO = getPokeDadosByNumero(numeroPokemon, authorizationHeader);
         TreinadorEntity treinadorEntity = treinadorService.getTreinadorById(idTreinador);
         PokedexEntity pokedexEntity = getPokedexById(treinadorEntity.getPokedexEntity().getIdPokedex());
         List<PokeDadosDTO> pokemons = pokedexEntity.getPokemons();
-        pokemons.add(pokeDadosDTO);
+        PokeDadosDTO pokeDadosDTO = getPokeDadosByNumero(numeroPokemon, authorizationHeader);
+        if(!pokemons.contains(pokeDadosDTO)){
+            pokemons.add(pokeDadosDTO);
+        } else {
+            throw new RegraDeNegocioException("Pokemon já revelado");
+        }
         pokedexEntity.setPokemons(
                 pokemons.stream()
                         .sorted(Comparator.comparing(a -> a.getPokemon().getNumero())).collect(Collectors.toList())
