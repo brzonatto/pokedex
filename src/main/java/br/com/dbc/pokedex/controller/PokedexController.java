@@ -1,7 +1,6 @@
 package br.com.dbc.pokedex.controller;
 
 import br.com.dbc.pokedex.dto.*;
-import br.com.dbc.pokedex.entity.PokedexEntity;
 import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.service.PokedexService;
 import io.swagger.annotations.ApiOperation;
@@ -9,13 +8,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.Document;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/pokedex")
@@ -42,14 +39,14 @@ public class PokedexController {
     }
 
     @PutMapping
-    public PokedexEntity revelarPokemon( @RequestParam("numeroPokemon") Integer numeroPokemon,
+    public PokedexDTO revelarPokemon( @RequestParam("numeroPokemon") Integer numeroPokemon,
                                          @RequestParam("idTreinador") String idTreinador,
                                          @RequestHeader("Authorization") String authorizationHeader)
             throws RegraDeNegocioException {
         return pokedexService.revelarPokemon(numeroPokemon, idTreinador, authorizationHeader);
     }
 
-    @GetMapping("/dados/pokedex")
+    @GetMapping("/dados")
     public PokedexDadosDTO getDadosPokedex(@RequestParam String idTreinador, @RequestHeader("Authorization") String authorizationHeader) throws RegraDeNegocioException {
         return pokedexService.getDadosPokedex(idTreinador, authorizationHeader);
     }

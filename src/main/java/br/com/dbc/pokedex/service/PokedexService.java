@@ -68,7 +68,7 @@ public class PokedexService {
                     List<String> tipos = new ArrayList<>();
                     if (docTipo.size() != 0) {
                         for (int i = 0; i < docTipo.size(); i++) {
-                            String string = docTipo.get(i).toString().replaceAll("\\{tipo=|}", "");
+                            String string = docTipo.get(i).toString().replaceAll("\\{tipo=|}", ""); // ["{tipo=AGUA}", "{tipo=VOADOR}"] = ["AGUA", "VOADOR"]
                             tipos.add(string);
                         }
                     }
@@ -100,7 +100,7 @@ public class PokedexService {
     }
 
 
-    public PokedexEntity revelarPokemon(Integer numeroPokemon, String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
+    public PokedexDTO revelarPokemon(Integer numeroPokemon, String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
         TreinadorEntity treinadorEntity = treinadorService.getTreinadorById(idTreinador);
         PokedexEntity pokedexEntity = getPokedexById(treinadorEntity.getPokedexEntity().getIdPokedex());
         List<PokeDadosDTO> pokemons = pokedexEntity.getPokemons();
@@ -115,7 +115,9 @@ public class PokedexService {
                         .sorted(Comparator.comparing(a -> a.getPokemon().getNumero())).collect(Collectors.toList())
         );
         pokedexEntity.setQuantidadePokemonsRevelados(pokemons.size());
-        return pokedexRepository.save(pokedexEntity);
+        PokedexEntity pokedexUpdate = pokedexRepository.save(pokedexEntity);
+        PokedexDTO pokedexDTO = objectMapper.convertValue(pokedexUpdate, PokedexDTO.class);
+        return pokedexDTO;
     }
 
     public PokedexDadosDTO getDadosPokedex(String idTreinador, String authorizationHeader) throws RegraDeNegocioException {
@@ -123,23 +125,18 @@ public class PokedexService {
         TreinadorDTO treinadorDTO = objectMapper.convertValue(treinadorEntity, TreinadorDTO.class);
         PokedexEntity pokedexEntity = getPokedexById(treinadorEntity.getPokedexEntity().getIdPokedex());
         pokedexEntity.setQuantidadeDePokemonsExistentes(countTotalPokemons(authorizationHeader));
-
         List<Integer> base = pokedexEntity.getPokemons()
                 .stream()
                 .map(pokemon -> pokemon.getPokemon().getNumero())
                 .collect(Collectors.toList());
-
         List<PokeDadosDTO> pokeDadosUpdate = new ArrayList<>();
         for (int i = 0; i < base.size(); i++) {
-            pokeDadosUpdate.add(getPokeDadosByNumero(base.get(i), authorizationHeader));      }
-
-
-
+            pokeDadosUpdate.add(getPokeDadosByNumero(base.get(i), authorizationHeader));
+        }
         pokedexEntity.setPokemons(
                 pokeDadosUpdate.stream()
                         .sorted(Comparator.comparing(a -> a.getPokemon().getNumero())).collect(Collectors.toList())
         );
-
         PokedexEntity pokedexUpdate = pokedexRepository.save(pokedexEntity);
         PokedexDTO pokedexDTO = objectMapper.convertValue(pokedexUpdate, PokedexDTO.class);
         PokedexDadosDTO pokedexDadosDTO = new PokedexDadosDTO();

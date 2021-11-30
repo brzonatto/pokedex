@@ -1,8 +1,6 @@
 package br.com.dbc.pokedex.service;
 
-import br.com.dbc.pokedex.dto.PokedexDTO;
 import br.com.dbc.pokedex.dto.TreinadorCreateDTO;
-import br.com.dbc.pokedex.entity.PokedexEntity;
 import br.com.dbc.pokedex.exceptions.RegraDeNegocioException;
 import br.com.dbc.pokedex.dto.TreinadorDTO;
 import br.com.dbc.pokedex.entity.TreinadorEntity;
